@@ -1,0 +1,38 @@
+{
+  "name": "use-fetch",
+  "version": "0.0.1",
+  "description": "A thin fetch wrapper with useful defaults",
+  "main": "src/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.4.1",
+    "jest-fetch-mock": "^1.6.5",
+    "rollup": "^0.62.0",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-uglify": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sullenor/use-fetch.git"
+  },
+  "keywords": [
+    "fetch"
+  ],
+  "author": "Alexey Litvinov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sullenor/use-fetch/issues"
+  },
+  "homepage": "https://github.com/sullenor/use-fetch#readme",
+  "jest": {
+    "automock": false,
+    "setupFiles": [
+      "./test/setup-fetch-mock.js"
+    ]
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest"
+  }
+}
