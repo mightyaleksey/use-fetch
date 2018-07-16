@@ -21,11 +21,16 @@ yarn add use-fetch
 ## Usage
 ```js
 import fetch from 'use-fetch';
+
+fetch('/messages', {json: true})
+  .then(response => {
+    console.log(response.body);
+  });
 ```
 
 ### API
 
-#### fetch(url, [options])
+#### fetch(input, [init])
 Returns a promise for a `response` object with a `body` property.
 
 ##### input
@@ -56,8 +61,18 @@ Takes a [response](https://developer.mozilla.org/en-US/docs/Web/API/Response) st
 
 
 ### Advanced
+To create `fetch` with your own preset use the `createFetch` function. By default it is initialized as in the example below.
+
 ```js
 import {createFetch} from 'use-fetch';
+
+export default const fetch = createFetch({
+  credentials: 'same-origin',
+  json: false,
+  redirect: 'follow',
+  throwHttpErrors: true,
+  timeout: 0,
+});
 ```
 
 

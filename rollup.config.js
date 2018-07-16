@@ -4,9 +4,8 @@ import {uglify} from 'rollup-plugin-uglify';
 
 export default [
   {
-    input: 'src/index.js',
+    input: 'src/cjs.js',
     output: {
-      exports: 'named',
       file: 'dist/index.js',
       format: 'iife',
       name: 'useFetch',
@@ -16,9 +15,8 @@ export default [
     ],
   },
   {
-    input: 'src/index.js',
+    input: 'src/cjs.js',
     output: {
-      exports: 'named',
       file: 'dist/index.min.js',
       format: 'iife',
       name: 'useFetch',
