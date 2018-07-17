@@ -59,6 +59,12 @@ Takes a [response](https://developer.mozilla.org/en-US/docs/Web/API/Response) st
 
 `body` must be a plain object or array and will be stringified.
 
+###### timeout
+Type: `number`<br>
+Default: `0`
+
+Milliseconds to wait for the server to end the response before aborting request with error. By Default there's no timeout.
+
 
 ### Advanced
 To create `fetch` with your own preset use the `createFetch` function. By default it is initialized as in the example below.
@@ -86,6 +92,11 @@ When server response code is not 2xx.
 When `json` option is enabled, server response code is 2xx, and `response.json()` fails.
 
 
-## License
+## Future plans
+- Add support of [AbortController](http://devdocs.io/dom/abortcontroller) with request cancellation.
+- Read response stream as text by default.
+- Add support of the [Request](http://devdocs.io/dom/request) object.
 
+
+## License
 > The MIT License
