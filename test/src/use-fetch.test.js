@@ -14,6 +14,7 @@ test('useFetch() should apply defaults', () => {
     method: 'GET',
     redirect: 'follow',
     throwHttpErrors: true,
+    timeout: 0,
   });
 });
 
@@ -33,6 +34,7 @@ test('useFetch() should overwrite defaults', () => {
     method: 'GET',
     redirect: 'follow',
     throwHttpErrors: false,
+    timeout: 0,
   });
 });
 
