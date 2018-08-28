@@ -5,24 +5,29 @@ A thin `fetch` wrapper with useful defaults. Inspired by [got](https://github.co
 
 ## Installation
 
-### From Npm
+### from npm
 ```bash
 npm install use-fetch
+```
+or
+```bash
 yarn add use-fetch
 ```
 
-### From unpckg
+### from unpkg
 ```html
 <script src="https://unpkg.com/use-fetch@0.0.1/dist/index.js"></script>
 <script src="https://unpkg.com/use-fetch@0.0.1/dist/index.min.js"></script>
 ```
 
+You can access package through `window.usefetch`.
+
 
 ## Usage
 ```js
-import fetch from 'use-fetch';
+import usefetch from 'use-fetch';
 
-fetch('/messages', {json: true})
+usefetch('/messages', { json: true })
   .then(response => {
     console.log(response.body);
   });
@@ -30,7 +35,7 @@ fetch('/messages', {json: true})
 
 ### API
 
-#### fetch(input, [init])
+#### usefetch(input, [init])
 Returns a promise for a `response` object with a `body` property.
 
 ##### input
@@ -63,33 +68,39 @@ Takes a [response](https://developer.mozilla.org/en-US/docs/Web/API/Response) st
 Type: `number`<br>
 Default: `0`
 
-Milliseconds to wait for the server to end the response before aborting request with error. By Default there's no timeout.
+Milliseconds to wait for the server to respond before aborting request with error. By Default there's no timeout.
 
 
 ### Advanced
 To create `fetch` with your own preset use the `createFetch` function. By default it is initialized as in the example below.
 
 ```js
-import {createFetch} from 'use-fetch';
+import { createFetch } from 'use-fetch';
 
-export default const fetch = createFetch({
+const usefetch = createFetch({
   credentials: 'same-origin',
+  redirect: 'follow',
   json: false,
   redirect: 'follow',
   throwHttpErrors: true,
   timeout: 0,
 });
+
+export default usefetch;
 ```
 
 
 ## Errors
-Each error contains (if available) `statusCode`, `statusMessage`, `url` and `response` properties to make debugging easier.
+Each error contains (if available) `status`, `statusText`, `url` and `response` properties to make debugging easier.
 
-#### fetch.HTTPError
+#### usefetch.HTTPError
 When server response code is not 2xx.
 
-#### fetch.ParseError
+#### usefetch.ParseError
 When `json` option is enabled, server response code is 2xx, and `response.json()` fails.
+
+#### usefetch.TimeoutError
+When server didn't respond within specified timeout.
 
 
 ## Future plans

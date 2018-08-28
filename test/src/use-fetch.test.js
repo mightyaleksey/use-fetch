@@ -1,113 +1,79 @@
-import useFetch from '../../src/use-fetch';
-import {HTTPError, ParseError} from '../../src/errors';
+import usefetch from '../../src/use-fetch';
+import to from '../to';
+import { HTTPError, ParseError } from '../../src/errors';
 
-test('useFetch() should apply defaults', () => {
+beforeEach(() => {
   fetch.resetMocks();
-  fetch.mockResponseOnce(null);
+});
 
-  useFetch('https://yandex.ru/');
+describe('use-fetch', () => {
+  describe('json', () => {
+    it('should parse json', async () => {
+      fetch.mockResponse('{"success":"ok"}', { status: 200, url: 'http://jsalterego.im/' });
 
-  expect(fetch).toBeCalledWith('https://yandex.ru/', {
-    credentials: 'same-origin',
-    headers: {},
-    json: false,
-    method: 'GET',
-    redirect: 'follow',
-    throwHttpErrors: true,
-    timeout: 0,
+      const [error, response] = await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
+
+      expect(error).toBe(null);
+      expect(response.body).toEqual({ success: 'ok' });
+    });
+
+    it('should throw ParseError', async () => {
+      fetch.mockResponse('ok', { status: 200, statusText: 'ok', url: 'http://jsalterego.im/' });
+
+      const [error] = await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
+
+      expect(error).toBeInstanceOf(ParseError);
+      expect(error).toEqual(expect.objectContaining({
+        status: 200,
+        statusText: 'ok',
+        url: 'http://jsalterego.im/',
+      }));
+    });
   });
-});
 
-test('useFetch() should overwrite defaults', () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce(null);
+  describe('retry', () => {
+    it('skip retries', async () => {
+      fetch.mockResponse('{"success":"ok"}', { status: 500, url: 'http://jsalterego.im/' });
 
-  useFetch('https://yandex.ru/', {json: true, throwHttpErrors: false});
+      await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
 
-  expect(fetch).toBeCalledWith('https://yandex.ru/', {
-    credentials: 'same-origin',
-    headers: {
-      'accept': 'application/json',
-      'content-type': 'application/json',
-    },
-    json: true,
-    method: 'GET',
-    redirect: 'follow',
-    throwHttpErrors: false,
-    timeout: 0,
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('retry after particular status ', async () => {
+      fetch.mockResponse('{"success":"ok"}', { status: 500, url: 'http://jsalterego.im/' });
+
+      await to(usefetch('http://jsalterego.im/', { json: true, retry: 1 }));
+
+      expect(fetch).toHaveBeenCalledTimes(2);
+    });
   });
-});
 
-test('useFetch() json=true, should parse the response', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('{"success": "ok"}');
+  describe('throwHttpErrors', () => {
+    it('should throw HTTPError', async () => {
+      fetch.mockResponse('{"success":"no"}', {
+        status: 500,
+        statusText: 'internal server error',
+        url: 'http://jsalterego.im/',
+      });
 
-  const response = await useFetch('https://yandex.ru/', {json: true});
-  expect(response.body).toEqual({success: 'ok'});
-});
+      const [error] = await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
 
-test('useFetch() json=true, should throw a ParseError', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('{success: "ok"}', {status: 200, url: 'https://yandex.ru/'});
+      expect(error).toBeInstanceOf(HTTPError);
+      expect(error).toEqual(expect.objectContaining({
+        status: 500,
+        statusText: 'internal server error',
+        url: 'http://jsalterego.im/',
+      }));
+    });
 
-  try {
-    await useFetch('https://yandex.ru/', {json: true});
-  } catch (error) {
-    expect(error).toBeInstanceOf(ParseError);
-    expect(error).toHaveProperty('statusCode');
-    expect(error.statusCode).toBe(200);
-    expect(error).toHaveProperty('statusMessage');
-    expect(error).toHaveProperty('url');
-    expect(error.url).toBe('https://yandex.ru/');
-  }
-});
+    it('should return response', async () => {
+      fetch.mockResponse('{"success":"no"}', { status: 500, url: 'http://jsalterego.im/' });
 
-test('useFetch() json=true, should parse non-200 responses', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('{"success": "fail"}', {status: 404, url: 'https://yandex.ru/'});
+      const [error, response] = await to(usefetch('http://jsalterego.im/', { json: true, retry: 0, throwHttpErrors: false }));
 
-  try {
-    await useFetch('https://yandex.ru/', {json: true});
-  } catch (error) {
-    expect(error).toBeInstanceOf(HTTPError);
-    expect(error.response.body).toEqual({success: 'fail'});
-  }
-});
-
-test('useFetch() json=true, should ignore errors on invalid non-200 responses', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('not found', {status: 404, url: 'https://yandex.ru/'});
-
-  try {
-    await useFetch('https://yandex.ru/', {json: true});
-  } catch (error) {
-    expect(error).toBeInstanceOf(HTTPError);
-  }
-});
-
-test('useFetch() throwHttpErrors=true, should throw HTTPError', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('not found', {status: 404, url: 'https://yandex.ru/'});
-
-  try {
-    await useFetch('https://yandex.ru/', {json: false, throwHttpErrors: true});
-  } catch (error) {
-    expect(error).toBeInstanceOf(HTTPError);
-    expect(error).toHaveProperty('statusCode');
-    expect(error.statusCode).toBe(404);
-    expect(error).toHaveProperty('statusMessage');
-    expect(error).toHaveProperty('url');
-    expect(error.url).toBe('https://yandex.ru/');
-  }
-});
-
-test('useFetch() throwHttpErrors=false, should return response', async () => {
-  fetch.resetMocks();
-  fetch.mockResponseOnce('not found', {status: 404, url: 'https://yandex.ru/'});
-
-  const response = await useFetch('https://yandex.ru/', {json: false, throwHttpErrors: false});
-  expect(response).toHaveProperty('ok');
-  expect(response.ok).toBe(false);
-  expect(response).toHaveProperty('status');
-  expect(response.status).toBe(404);
+      expect(error).toBe(null);
+      expect(response.body).toEqual({ success: 'no' });
+    });
+  });
 });

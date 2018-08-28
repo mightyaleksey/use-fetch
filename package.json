@@ -3,11 +3,18 @@
   "version": "0.0.1",
   "description": "A thin fetch wrapper with useful defaults",
   "main": "src/index.js",
+  "module": "src/index.js",
   "dependencies": {},
   "devDependencies": {
+    "@sullenor/eslint-config": "^2.0.0",
+    "babel-eslint": "^9.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^5.4.0",
+    "express": "^4.16.3",
     "jest": "^23.5.0",
     "jest-fetch-mock": "^1.6.5",
+    "parcel-bundler": "^1.9.7",
     "rollup": "^0.62.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-uglify": "^4.0.0"
@@ -25,14 +32,26 @@
     "url": "https://github.com/sullenor/use-fetch/issues"
   },
   "homepage": "https://github.com/sullenor/use-fetch#readme",
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "extends": "@sullenor/eslint-config"
+  },
   "jest": {
     "automock": false,
     "setupFiles": [
       "./test/setup-fetch-mock.js"
+    ],
+    "testPathIgnorePatterns": [
+      "test/browser"
     ]
   },
   "scripts": {
     "build": "rollup -c",
-    "test": "jest"
+    "lint": "eslint '{src,test}/**/*.js'",
+    "test": "jest",
+    "test:browser": "node test/browser/server"
   }
 }

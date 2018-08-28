@@ -1,27 +1,27 @@
-export function inherit(Target, Source) {
-  Target.prototype = Object.create(Source.prototype, {
-    constructor: {
-      configurable: true,
-      enumerable: false,
-      value: Target,
-      writable: true,
-    },
-  });
-}
+import { inherit } from './utils';
 
-function UseFetchError(name, message, response) {
+// Using prototype inheritance instead of classes,
+// because of incorrect 'instanceof' behavior after
+// babel@6 transpiling and terrible workarounds.
+export function UseFetchError(name, message, response) {
+  // Skipping Error constructor call for 'this',
+  // cause it acts like 'new Error()' call
+  // and returns new error instance instead of
+  // attaching `message`, `name` and other stuff to this.
   Object.defineProperties(this, {
-    name: {value: name || 'UseFetchError'},
-    message: {value: message},
+    name: { value: name || 'UseFetchError' },
+    message: { value: message },
   });
 
   Error.captureStackTrace(this, this.constructor);
 
-  Object.assign(this, {
-    statusCode: response.status,
-    statusMessage: response.statusText,
-    url: response.url,
-  });
+  if (response !== null) {
+    Object.assign(this, {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+    });
+  }
 
   Object.defineProperty(this, 'response', {
     value: response,
@@ -51,3 +51,14 @@ export function ParseError(error, response) {
 }
 
 inherit(ParseError, UseFetchError);
+
+export function TimeoutError(threshold) {
+  UseFetchError.call(
+    this,
+    'TimeoutError',
+    `Timed out awaiting for ${threshold}ms`,
+    null
+  );
+}
+
+inherit(TimeoutError, UseFetchError);

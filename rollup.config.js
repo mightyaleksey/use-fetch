@@ -1,6 +1,5 @@
 import babel from 'rollup-plugin-babel';
-import {uglify} from 'rollup-plugin-uglify';
-
+import { uglify } from 'rollup-plugin-uglify';
 
 export default [
   {
@@ -8,7 +7,7 @@ export default [
     output: {
       file: 'dist/index.js',
       format: 'iife',
-      name: 'useFetch',
+      name: 'usefetch',
     },
     plugins: [
       babel(),
@@ -19,11 +18,11 @@ export default [
     output: {
       file: 'dist/index.min.js',
       format: 'iife',
-      name: 'useFetch',
+      name: 'usefetch',
     },
     plugins: [
       babel(),
       uglify(),
     ],
-  }
+  },
 ];
