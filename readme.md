@@ -78,8 +78,10 @@ To create `fetch` with your own preset use the `createFetch` function. By defaul
 import { createFetch } from 'use-fetch';
 
 const usefetch = createFetch({
+  // spec
   credentials: 'same-origin',
   redirect: 'follow',
+  // custom
   json: false,
   redirect: 'follow',
   throwHttpErrors: true,

@@ -9,12 +9,12 @@ beforeEach(() => {
 describe('use-fetch', () => {
   describe('json', () => {
     it('should parse json', async () => {
-      fetch.mockResponse('{"success":"ok"}', { status: 200, url: 'http://jsalterego.im/' });
+      fetch.mockResponse('{"success":"yes"}', { status: 200, url: 'http://jsalterego.im/' });
 
       const [error, response] = await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
 
       expect(error).toBe(null);
-      expect(response.body).toEqual({ success: 'ok' });
+      expect(response.body).toEqual({ success: 'yes' });
     });
 
     it('should throw ParseError', async () => {
@@ -33,7 +33,7 @@ describe('use-fetch', () => {
 
   describe('retry', () => {
     it('skip retries', async () => {
-      fetch.mockResponse('{"success":"ok"}', { status: 500, url: 'http://jsalterego.im/' });
+      fetch.mockResponse('{"success":"no"}', { status: 500, url: 'http://jsalterego.im/' });
 
       await to(usefetch('http://jsalterego.im/', { json: true, retry: 0 }));
 
@@ -41,7 +41,7 @@ describe('use-fetch', () => {
     });
 
     it('retry after particular status ', async () => {
-      fetch.mockResponse('{"success":"ok"}', { status: 500, url: 'http://jsalterego.im/' });
+      fetch.mockResponse('{"success":"no"}', { status: 500, url: 'http://jsalterego.im/' });
 
       await to(usefetch('http://jsalterego.im/', { json: true, retry: 1 }));
 
@@ -75,5 +75,28 @@ describe('use-fetch', () => {
       expect(error).toBe(null);
       expect(response.body).toEqual({ success: 'no' });
     });
+  });
+});
+
+describe('createFetch', () => {
+  it('should be called with specifed defaults', async () => {
+    fetch.mockResponse('{"success":"yes"}', { status: 200, url: 'http://jsalterego.im/' });
+
+    await to(usefetch('http://jsalterego.im/'));
+
+    expect(fetch).toBeCalledWith('http://jsalterego.im/', expect.objectContaining({
+      credentials: 'same-origin',
+      headers: {},
+      json: false,
+      method: 'GET',
+      redirect: 'follow',
+      retry: {
+        methods: ['GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE'],
+        retries: 2,
+        statusCodes: [408, 413, 429, 500, 502, 503, 504],
+      },
+      throwHttpErrors: true,
+      timeout: 0,
+    }));
   });
 });

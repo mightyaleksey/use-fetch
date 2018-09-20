@@ -1,6 +1,6 @@
 {
   "name": "use-fetch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A thin fetch wrapper with useful defaults",
   "main": "src/index.js",
   "module": "src/index.js",
