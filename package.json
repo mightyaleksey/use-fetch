@@ -1,9 +1,9 @@
 {
   "name": "use-fetch",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A thin fetch wrapper with useful defaults",
-  "main": "src/index.js",
   "module": "src/index.js",
+  "main": "lib/index.js",
   "dependencies": {},
   "devDependencies": {
     "@sullenor/eslint-config": "^2.0.0",

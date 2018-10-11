@@ -25,4 +25,12 @@ export default [
       uglify(),
     ],
   },
+  {
+    input: 'src/cjs.js',
+    output: {
+      file: 'lib/index.js',
+      format: 'cjs',
+    },
+    plugins: [],
+  },
 ];
