@@ -1,8 +1,8 @@
 {
   "name": "use-fetch",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A thin fetch wrapper with useful defaults",
-  "module": "src/index.js",
+  "module": "lib/index.esm.js",
   "main": "lib/index.js",
   "dependencies": {},
   "devDependencies": {
