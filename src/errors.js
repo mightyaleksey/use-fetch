@@ -13,7 +13,10 @@ export function UseFetchError(name, message, response) {
     message: { value: message },
   });
 
-  Error.captureStackTrace(this, this.constructor);
+  // captureStackTrace is not defined in safari 12.0.3
+  if (typeof Error.captureStackTrace === 'function') {
+    Error.captureStackTrace(this, this.constructor);
+  }
 
   if (response !== null) {
     Object.assign(this, {

@@ -1,6 +1,6 @@
 {
   "name": "use-fetch",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A thin fetch wrapper with useful defaults",
   "module": "lib/index.esm.js",
   "main": "lib/index.js",
