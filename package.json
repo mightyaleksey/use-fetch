@@ -2,22 +2,17 @@
   "name": "use-fetch",
   "version": "0.0.5",
   "description": "A thin fetch wrapper with useful defaults",
-  "module": "lib/index.esm.js",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "dependencies": {},
   "devDependencies": {
-    "@sullenor/eslint-config": "^2.0.0",
-    "babel-eslint": "^9.0.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "eslint": "^5.4.0",
-    "express": "^4.16.3",
-    "jest": "^23.5.0",
-    "jest-fetch-mock": "^1.6.5",
-    "parcel-bundler": "^1.9.7",
-    "rollup": "^0.62.0",
-    "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-uglify": "^4.0.0"
+    "browser-host": "^0.0.4",
+    "browser-pack-flat": "^3.4.2",
+    "browserify": "^16.2.3",
+    "deumdify": "^1.2.7",
+    "es-check": "^5.0.0",
+    "standard": "^12.0.1",
+    "tape": "^4.10.2",
+    "tinyify": "^2.5.1"
   },
   "repository": {
     "type": "git",
@@ -32,26 +27,11 @@
     "url": "https://github.com/sullenor/use-fetch/issues"
   },
   "homepage": "https://github.com/sullenor/use-fetch#readme",
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "sourceType": "module"
-    },
-    "extends": "@sullenor/eslint-config"
-  },
-  "jest": {
-    "automock": false,
-    "setupFiles": [
-      "./test/setup-fetch-mock.js"
-    ],
-    "testPathIgnorePatterns": [
-      "test/browser"
-    ]
-  },
   "scripts": {
-    "build": "rollup -c",
-    "lint": "eslint '{src,test}/**/*.js'",
-    "test": "jest",
-    "test:browser": "node test/browser/server"
+    "bundle": "scripts/bundle.sh",
+    "check-es5": "es-check --module es5 src/*.js",
+    "check-es6": "es-check --module es6 src/*.js",
+    "lint": "standard '{src,test}/**/*.js'",
+    "test": "browserify test/*.test.js | browser-host --mock test/_server-mock.js"
   }
 }

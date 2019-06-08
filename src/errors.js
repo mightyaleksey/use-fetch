@@ -1,67 +1,76 @@
-import { inherit } from './utils';
+'use strict'
+
+var inherit = require('./utils').inherit
+
+module.exports = {
+  UseFetchError: UseFetchError,
+  HTTPError: HTTPError,
+  ParseError: ParseError,
+  TimeoutError: TimeoutError
+}
 
 // Using prototype inheritance instead of classes,
 // because of incorrect 'instanceof' behavior after
 // babel@6 transpiling and terrible workarounds.
-export function UseFetchError(name, message, response) {
+function UseFetchError (name, message, response) {
   // Skipping Error constructor call for 'this',
   // cause it acts like 'new Error()' call
   // and returns new error instance instead of
   // attaching `message`, `name` and other stuff to this.
   Object.defineProperties(this, {
     name: { value: name || 'UseFetchError' },
-    message: { value: message },
-  });
+    message: { value: message }
+  })
 
   // captureStackTrace is not defined in safari 12.0.3
   if (typeof Error.captureStackTrace === 'function') {
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor)
   }
 
   if (response !== null) {
     Object.assign(this, {
       status: response.status,
       statusText: response.statusText,
-      url: response.url,
-    });
+      url: response.url
+    })
   }
 
   Object.defineProperty(this, 'response', {
-    value: response,
-  });
+    value: response
+  })
 }
 
-inherit(UseFetchError, Error);
+inherit(UseFetchError, Error)
 
-export function HTTPError(response) {
+function HTTPError (response) {
   UseFetchError.call(
     this,
     'HTTPError',
-    `Response code ${response.status} (${response.statusText})`,
+    'Response code ' + response.status + ' (' + response.statusText + ')',
     response
-  );
+  )
 }
 
-inherit(HTTPError, UseFetchError);
+inherit(HTTPError, UseFetchError)
 
-export function ParseError(error, response) {
+function ParseError (error, response) {
   UseFetchError.call(
     this,
     'ParseError',
-    `${error.message} in ${response.url}`,
+    error.message + ' in ' + response.url,
     response
-  );
+  )
 }
 
-inherit(ParseError, UseFetchError);
+inherit(ParseError, UseFetchError)
 
-export function TimeoutError(threshold) {
+function TimeoutError (threshold) {
   UseFetchError.call(
     this,
     'TimeoutError',
-    `Timed out awaiting for ${threshold}ms`,
+    'Timed out awaiting for ' + threshold + 'ms',
     null
-  );
+  )
 }
 
-inherit(TimeoutError, UseFetchError);
+inherit(TimeoutError, UseFetchError)
