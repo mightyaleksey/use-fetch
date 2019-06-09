@@ -105,6 +105,10 @@ When `json` option is enabled, server response code is 2xx, and `response.json()
 When server didn't respond within specified timeout.
 
 
+## Polyfill
+To use the library in browsers, that doesn't have **fetch** (see support [here](https://caniuse.com/#feat=fetch)), you may want to add a polyfill. Check the [unfetch](https://github.com/developit/unfetch#usage-as-a-polyfill) project.
+
+
 ## Future plans
 - Add support of [AbortController](http://devdocs.io/dom/abortcontroller) with request cancellation.
 - Read response stream as text by default.

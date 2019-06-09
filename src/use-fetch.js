@@ -1,9 +1,18 @@
-import { HTTPError, ParseError, TimeoutError } from './errors';
-import { normalizeInit as normalize } from './normalize-init';
-import { wait } from './utils';
+'use strict'
+
+/* global self */
+var HTTPError = require('./errors').HTTPError
+var ParseError = require('./errors').ParseError
+var TimeoutError = require('./errors').TimeoutError
+var wait = require('./utils').wait
+var normalize = require('./normalize-init').normalizeInit
 
 // used to compare with response to distinguish real response from timeout
-const timeoutResponse = { ok: false };
+var timeoutResponse = { ok: false }
+
+module.exports = {
+  createFetch: createFetch
+}
 
 /**
  *
@@ -13,26 +22,26 @@ const timeoutResponse = { ok: false };
  * @param {boolean} init.throwHttpErrors
  * @param {number}  init.timeout
  */
-function useFetch(input, init) {
-  let retryCount = 0;
+function usefetch (input, init) {
+  var retryCount = 0
 
   return fetch(input, init)
     .then(handleRetries)
     .then(handleErrors)
-    .then(handleResponse);
+    .then(handleResponse)
 
-  function fetch(input, init) {
+  function fetch (input, init) {
     if (init.timeout > 0) {
       return Promise.race([
         self.fetch(input, init),
-        wait(init.timeout, timeoutResponse),
-      ]);
+        wait(init.timeout, timeoutResponse)
+      ])
     }
 
-    return self.fetch(input, init);
+    return self.fetch(input, init)
   }
 
-  function handleRetries(response) {
+  function handleRetries (response) {
     if (
       (response === timeoutResponse || !response.ok) &&
       init.retry.retries > retryCount &&
@@ -40,65 +49,56 @@ function useFetch(input, init) {
       init.retry.statusCodes.includes(response.status)
     ) {
       // todo check retry-after header
-      const timeToWait = 1000 * Math.pow(2, retryCount) + Math.random() * 100;
-      retryCount++;
+      var timeToWait = 1000 * Math.pow(2, retryCount) + Math.random() * 100
+      retryCount++
 
       return wait(timeToWait)
-        .then(() => fetch(input, init))
-        .then(handleRetries);
+        .then(function () {
+          return fetch(input, init)
+        })
+        .then(handleRetries)
     }
 
-    return response;
+    return response
   }
 
-  function handleErrors(response) {
+  function handleErrors (response) {
     if (response === timeoutResponse) {
-      throw new TimeoutError(init.timeout);
+      throw new TimeoutError(init.timeout)
     }
 
     if (!response.ok && init.throwHttpErrors) {
-      throw new HTTPError(response);
+      throw new HTTPError(response)
     }
 
-    return response;
+    return response
   }
 
-  function handleResponse(response) {
+  function handleResponse (response) {
     if (init.json) {
       return response.json()
-        .then(body => {
+        .then(function (body) {
           Object.defineProperty(response, 'body', {
             configurable: false,
             enumerable: true,
             value: body,
-            writable: false,
-          });
+            writable: false
+          })
 
-          return response;
+          return response
         })
-        .catch(error => {
-          throw new ParseError(error, response);
-        });
+        .catch(function (error) {
+          throw new ParseError(error, response)
+        })
     }
 
-    return response;
+    return response
   }
 }
 
-export function createFetch(defaults) {
-  return (input, init) => {
-    const options = normalize(init, defaults);
-    return useFetch(input, options);
-  };
+function createFetch (defaults) {
+  return function (input, init) {
+    var options = normalize(init, defaults)
+    return usefetch(input, options)
+  }
 }
-
-export default createFetch({
-  // spec
-  credentials: 'same-origin',
-  redirect: 'follow',
-  // custom
-  json: false,
-  retry: 2,
-  throwHttpErrors: true,
-  timeout: 0,
-});
