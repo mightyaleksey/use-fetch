@@ -16,8 +16,8 @@ yarn add use-fetch
 
 ### from unpkg
 ```html
-<script src="https://unpkg.com/use-fetch@0.0.1/dist/index.js"></script>
-<script src="https://unpkg.com/use-fetch@0.0.1/dist/index.min.js"></script>
+<script src="https://unpkg.com/use-fetch@latest/dist/index.js"></script>
+<script src="https://unpkg.com/use-fetch@latest/dist/index.min.js"></script>
 ```
 
 You can access package through `window.usefetch`.
@@ -107,6 +107,14 @@ When server didn't respond within specified timeout.
 
 ## Polyfill
 To use the library in browsers, that doesn't have **fetch** (see support [here](https://caniuse.com/#feat=fetch)), you may want to add a polyfill. Check the [unfetch](https://github.com/developit/unfetch#usage-as-a-polyfill) project.
+
+
+## Development
+The contents of **src** folder written in es5 syntax — saves times on transpilers setup, cause you don't need any.
+- `yarn bundle` — create standalone browser bundle
+- `yarn check-es5` — checks if it's a valid es5 syntax
+- `yarn lint --fix` — lint the code and fix stylistic issues
+- `yarn test` — run tests in google chrome
 
 
 ## Future plans

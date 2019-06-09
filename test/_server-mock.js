@@ -3,7 +3,7 @@
 const qs = require('querystring')
 
 module.exports = function (req, res) {
-  const chunks = req.url.split('?');
+  const chunks = req.url.split('?')
   const pathname = chunks.shift()
   const query = qs.parse(chunks.pop())
 

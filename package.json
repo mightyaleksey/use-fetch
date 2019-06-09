@@ -1,8 +1,12 @@
 {
   "name": "use-fetch",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A thin fetch wrapper with useful defaults",
   "main": "src/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {},
   "devDependencies": {
     "browser-host": "^0.0.4",

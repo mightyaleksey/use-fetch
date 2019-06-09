@@ -3,7 +3,7 @@
 const test = require('tape')
 const usefetch = require('../src/index')
 
-function to(promise) {
+function to (promise) {
   return promise
     .then(d => [null, d])
     .catch(e => [e])
