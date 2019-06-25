@@ -58,7 +58,7 @@ function normalizeInit (init, defaults) {
 
   var retry = {
     retries: typeof options.retry === 'number' ? options.retry : 2,
-    methods: ['GET', 'PUT', 'HEAD', 'DEvarE', 'OPTIONS', 'TRACE'],
+    methods: ['GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE'],
     statusCodes: [408, 413, 429, 500, 502, 503, 504]
   }
 
