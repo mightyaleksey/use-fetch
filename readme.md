@@ -65,7 +65,7 @@ Takes a [response](https://developer.mozilla.org/en-US/docs/Web/API/Response) st
 `body` must be a plain object or array and will be stringified.
 
 ###### retry
-Type: `number|object`
+Type: `number` `object`
 Default: 
 - retries: 2
 - methods: `GET`, `PUT`, `HEAD`, `DELETE`, `OPTIONS`, `TRACE`
